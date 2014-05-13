@@ -1,0 +1,125 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body onload="javascript:gflowOnload();">
+<div id="gflowMainArea">
+    <div class="gflowHeader">Generic Workflow Server Usage Demo</div>
+	<div id="gflowLeftColumnArea">
+		<div id="gflowSelectionsArea">
+			<form>
+				<div>
+					<span class="gflowLabel">Select workflow</span>
+					<div>
+						<select id="gflowWorkflow" name="workflow" size="2" class="gflowSelect" onclick="javascript:gflowWorkflowSelected(this);">
+							<option value="gflow-Workflow-for-observationtables.t2flow">
+								Show observation tables
+							</option>
+							<option value="gflow-Workflow-for-FitKN-plot.t2flow">
+								Create FitKN plot
+							</option>
+						</select>
+					</div>
+				</div>
+				<span> </span>
+				<div id="gflowSelectObservationTables" style="display:none">
+					<span id="gflowObservationTables" class="gflowLabel">Select observation tables</span>
+					<br>
+					<span class="gflowSubLabel">- by entering pids of observation tables:</span>
+					<table id="gflowBeginEndTable">
+						<tr>
+							<td>
+									<input id="gflowObstables" type="text" size="30" value="si:256343,si:256344">
+							</td>
+						</tr>
+					</table>
+				</div>
+				<span> </span>
+				<div id="gflowSelectSpecies" style="display:none">
+					<span class="gflowLabel">Select species name</span>
+					<div>
+						<select id="gflowSpecies" name="species_name" size="1" class="gflowSelect" onclick="javascript:gflowSpeciesSelected(this);">
+							<option value=" ">
+								select
+							</option>
+									<option value="Bonasa umbellus">
+										Bonasa umbellus (Ruffed Grouse)
+									</option>
+									<option value="Canis latrans">
+										Canis latrans (Coyote)
+									</option>
+									<option value="Didelphis virginiana">
+										Didelphis virginiana (Virginia Opossum)
+									</option>
+									<option value="Glaucomys volans">
+										Glaucomys volans (Southern Flying Squirrel)
+									</option>
+									<option value="Lynx rufus">
+										Lynx rufus (Bobcat)
+									</option>
+									<option value="Odocoileus virginianus">
+										Odocoileus virginianus (White-tailed Deer)
+									</option>
+									<option value="Procyon lotor">
+										Procyon lotor (Northern Raccoon)
+									</option>
+									<option value="Sciurus carolinensis">
+										Sciurus carolinensis (Eastern Gray Squirrel)
+									</option>
+									<option value="Tamias striatus">
+										Tamias striatus (Eastern Chipmunk)
+									</option>
+									<option value="Ursus americanus">
+										Ursus americanus (American Black Bear)
+									</option>
+						</select>
+					</div>
+				</div>
+				<div class="gflowSubLabel" style="clear:both;float:right;">
+					After your selections, click on 
+						<input id="gflowRunWorkflowButton" type="button" value="Run the Workflow" onclick="javascript:gflowRun();" title="run workflow" disabled>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div id="gflowRightColumnArea">
+		<div id="gflowMapArea" style="width:100%; height:100px"><span> </span></div>
+		<div id="gflowAjaxArea" style="display:none"><span> </span></div>
+	</div>
+	<div id="gflowStatusDiv">
+		<span> </span><div id="gflowStatusArea"><span> </span></div>
+	</div>
+	<div id="gflowBottomArea"><span> </span>
+		<h1>Generic Workflow API</h1>
+		<table>
+			<tr>
+				<td>/gflowRun/workflowFileName</td>
+				<td>initiate the workflow run, returns UUID of the workflow run</td>
+			</tr>
+			<tr>
+				<td>/gflowSetInput/UUID/inputName/inputValue</td>
+				<td>set the workflow input, one call per inputName</td>
+			</tr>
+			<tr>
+				<td>/gflowSetStatus/UUID/status</td>
+				<td>set the workflow status</td>
+			</tr>
+			<tr>
+				<td>/gflowWaitFinish/UUID</td>
+				<td>wait till the workflow status is 'Finished'</td>
+			</tr>
+			<tr>
+				<td>/gflowGetResult/UUID</td>
+				<td>get the workflow run result</td>
+			</tr>
+		</table>
+		<p><a href="http://dev.mygrid.org.uk/wiki/display/taverna/User+Manual" target="tavernausage">
+		See the Taverna Usage document</a> about the life cycle of workflow runs,
+		and about the construction of workflows with the Taverna Workbench.</p>
+		<p>Constructed workflows are xml files, which are copied into the directory of this module.</p>
+		<p><a href="/modules/gflow/SidoraTavernaUsageDocumentationFeb2013.pdf" target="situ">See pages 22-23 of this document for illustrations of workflow construction</a>.</p>
+		<p>The javascript file gflow.js in this module demonstrates how to use the Generic Workflow API.</p>
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<?php
+
+// Generic Workflow Server Usage
+// file: gflow.module
+// author: Gert Schmeltz Pedersen gertsp45@gmail.com
+
+	function gflow_init() {
+//    drupal_set_message(t('gflow_init'));
+		drupal_add_css(drupal_get_path('module', 'gflow').'/gflow.css');
+		drupal_add_js(drupal_get_path('module', 'gflow').'/gflow.js');
+	}
+   
+	function gflow_perm() {
+		return array('Generic Workflow Server Usage', 'Administer gflow');
+	}
+   
+
+	function gflow_menu() {
+		$items = array();
+		$items['gflow'] = array(
+			'page callback' => 'gflow',
+			'access arguments' => array('Generic Workflow Server Usage'),
+			'type' => MENU_CALLBACK,
+		);
+		$items['admin/settings/gflow'] = array(
+			'title' => 'gflow Settings',
+			'description' => 'gflow Settings',
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array('gflow_settings'),
+			'access arguments' => array('Administer gflow'),
+		);
+		return $items;
+	}
+
+	function gflow_block($op = 'list', $delta = 0, $edit = array()) {
+		switch ($op) {
+			case 'list':
+				$blocks[0] = array(
+				'info' => t('gflow Block'),
+				);
+				return $blocks;
+			case 'configure':
+				$form = array();
+				switch ($delta) {
+					case 0:
+						$form['gflow_block_workflow_server']=array(
+							'#type' => 'textfield',
+							'#title' => t('The url of the workflow server'),
+							'#size' => 75,
+							'#description' => t('The url of the workflow server.'),
+							'#default_value' => variable_get('gflow_block_workflow_server', t('http://127.0.0.1:8080/taverna/rest/runs')),
+						);
+						$form['gflow_block_workflow_userpass']=array(
+							'#type' => 'textfield',
+							'#title' => t('The username:password at the workflow server'),
+							'#size' => 75,
+							'#description' => t('The username:password at the workflow server.'),
+							'#default_value' => variable_get('gflow_block_workflow_userpass', t('taverna:taverna')),
+						);
+						$form['gflow_block_workflow_mimetype']=array(
+							'#type' => 'textfield',
+							'#title' => t('The mimetype of the workflow files'),
+							'#size' => 75,
+							'#description' => t('The mimetype of the workflow files.'),
+							'#default_value' => variable_get('gflow_block_workflow_mimetype', t('application/vnd.taverna.t2flow+xml')),
+						);
+						$form['gflow_block_fedora']=array(
+							'#type' => 'textfield',
+							'#title' => t('The url of fedora'),
+							'#size' => 75,
+							'#description' => t('The url of fedora.'),
+							'#default_value' => variable_get('gflow_block_fedora', t('http://127.0.0.1:8080/fedora')),
+						);
+						$form['gflow_block_fedora_userpass']=array(
+							'#type' => 'textfield',
+							'#title' => t('The username:password at fedora'),
+							'#size' => 75,
+							'#description' => t('The username:password at fedora.'),
+							'#default_value' => variable_get('gflow_block_fedora_userpass', t('sianisuseroffedora:sianisuseroffedorapassword')),
+						);
+						break;
+				}
+				return $form;
+			case 'save':
+				switch ($delta) {
+					case 0:
+						variable_set('gflow_block_workflow_server', $edit['gflow_block_workflow_server']);
+						variable_set('gflow_block_workflow_userpass', $edit['gflow_block_workflow_userpass']);
+						variable_set('gflow_block_workflow_mimetype', $edit['gflow_block_workflow_mimetype']);
+						variable_set('gflow_block_fedora', $edit['gflow_block_fedora']);
+						variable_set('gflow_block_fedora_userpass', $edit['gflow_block_fedora_userpass']);
+						break;
+				}
+			case 'view': default:
+				case 0:
+					$block['subject'] = t('Generic Workflow Usage Block');
+					$block['content'] = gflow_get_block();
+					break;
+		}
+		return $block;
+	}
+
+	function gflow_theme() {
+		return array(
+			'gflow_block_form' => array(
+				'arguments' => array (
+				'form' => NULL,
+				),
+			),
+		);
+	}
+
+	function gflow_get_block() {
+		global $user;
+	 	$datestamp = date('Y-m-d H:i:s');
+ 		$logdatestamp = date('Y-m-d');
+		$logfp = fopen('/tmp/gflow-' . $logdatestamp . '.log', 'a');
+		fwrite($logfp, "\n\n[$datestamp] $user->name gflowBlock.html");
+		fclose($logfp);
+		return file_get_contents(drupal_get_path('module', 'gflow') . '/gflowBlock.html');
+	}
+
+	function gflow($op, $arg1=null, $arg2=null, $arg3=null, $arg4=null, $arg5=null, $arg6=null) {
+		module_load_include('inc', 'gflow', 'GFLOW');
+		$gflowClass = new GFLOW();
+		if ($op == 'gflowGetFile') {
+			$workflowResult = $gflowClass->gflowGetFile($arg1);
+			return $workflowResult;
+		}
+		if ($op == 'gflowRun') {
+			$workflowResult = $gflowClass->gflowRun($arg1);
+			return $workflowResult;
+		}
+		if ($op == 'gflowSetInput') {
+			$workflowResult = $gflowClass->gflowSetInput($arg1, $arg2, $arg3);
+			return $workflowResult;
+		}
+		if ($op == 'gflowSetStatus') {
+			$workflowResult = $gflowClass->gflowSetStatus($arg1, $arg2);
+			return $workflowResult;
+		}
+		if ($op == 'gflowWaitFinish') {
+			$workflowResult = $gflowClass->gflowWaitFinish($arg1);
+			return $workflowResult;
+		}
+		if ($op == 'gflowGetResult') {
+			$workflowResult = $gflowClass->gflowGetResult($arg1);
+			return $workflowResult;
+		}
+	}
+
+	function gflow_settings() { 
+		return system_settings_form($form); 
+	}

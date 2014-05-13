@@ -1,0 +1,9 @@
+// Generic Workflow Server Usage
+// file: gflow.info
+// author: Gert Schmeltz Pedersen gertsp45@gmail.com
+
+name = gflow
+description = Module for generic workflow
+package = gflow
+version = 6.1dev
+core = 6.x
