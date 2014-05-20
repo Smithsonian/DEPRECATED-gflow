@@ -68,7 +68,7 @@
 							'#type' => 'textfield',
 							'#title' => t('The url of fedora'),
 							'#size' => 75,
-							'#description' => t('The url of fedora.'),
+							'#description' => t('The url of fedora. Used by the workflows to fetch the observation tables.'),
 							'#default_value' => variable_get('gflow_block_fedora', t('http://127.0.0.1:8080/fedora')),
 						);
 						$form['gflow_block_fedora_userpass']=array(
